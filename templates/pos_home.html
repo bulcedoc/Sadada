@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css2?family=Overpass:wght@400;600&display=swap" rel="stylesheet">
+    <title>Pos Home</title>
+    {% load static %}
+</head>
+<body>
+  {% for msg in messages %}
+  {{msg}}
+  {% endfor %}
+    <div class="main">
+        <div class="cate">
+            <div class="c">
+             {% for cot in categ %}
+             <div class="ct" id="{{cot.cat_id}}" onclick="selo(this)">{{cot.cat_name}}</div>
+             {% endfor %}
+            </div>
+            <div id="show">
+              <div id="dim">
+              {% for product in products%}
+               <div id="ct" class="{{product.p_cat_id}}" onclick="tick(this)" style="display: none;">
+                <input type="hidden" value="{{product.p_id}}">
+                {{product.p_name}}
+               </div>
+               {% endfor %}
+              </div>
+            </div>
+        </div>
+        <form action="{% url 'add_cart' %}" method="post" id="cart">
+          {% csrf_token %}
+          <div class="carted">Billing Table - 4</div>
+          <select name="cart">
+            {% for cart in carts %}
+            <option value="{{cart.cart_number}}">{{cart.cart_number}}</option>
+            {% endfor %}
+          </select>
+          <input type="submit">
+        </form>
+    </div>
+</body>
+</html>
+<style>
+    body{
+        margin: 0;
+        font-family: 'Overpass', sans-serif;
+        
+    }
+    .carted{
+      background-color: rgb(31, 177, 250);
+      text-align: center;
+      font-weight: bold;
+    }
+    .main{
+        display: flex;
+        flex-direction: row; 
+        
+        height: 500px;
+       
+        
+    }
+    .cate{
+        display: flex;  
+        width: 70%; 
+        
+        
+        
+    }
+    .c{
+      display: block;
+        width: 30%;
+       overflow: scroll;
+
+        
+        
+    }
+    #show{
+      
+      width: 70%;
+      
+      border: solid black 2px;
+      overflow: scroll;
+    
+    }
+  
+  
+   #dim{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;    
+    
+   }
+    .ct{
+      display: flex;
+        padding: 5%;
+        background-color: aliceblue;
+        border: solid black 1px;
+      
+        margin: 1%;
+    }
+    #ct{
+      display: flex;
+        padding: 5%;
+        background-color: aliceblue;
+        border: solid black 1px;
+      
+        margin: 1%;
+    }
+    .adds{
+      border:none;
+    }
+   
+  #cart{
+          display: flex;
+          flex-direction: column;
+          width: 35%;
+          
+      }
+      .cart_items{
+          display: grid;
+          grid-template-columns: 50% 7% 20% 7% 7%;
+          padding: 1%;
+      
+      }
+      .minus{
+          display: flex;
+      }
+      .minus-1{
+          display: flex;
+          margin-left: 80%;
+          padding-top: -80%;
+      }
+      .range{
+          display: flex;
+          margin: 5%;
+          margin-right: 15%;
+          border: none;
+          text-align: center;
+          
+      }
+      input::-webkit-outer-spin-button,
+      input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+      }
+      input[type=number] {
+      -moz-appearance: textfield;
+      }
+
+   
+</style>
+<script>
+    function selo(element){
+     let c = element.id
+     let h = document.getElementById("dim").childNodes;
+     
+     let i = 1
+     while(i < h.length){
+      h[i].style.display = "none"; 
+      i=i+2;  
+    }
+     let d = document.getElementsByClassName(c)
+     let j = 0
+     while(j < d.length){
+      d[j].style.display = "block"; 
+      j=j+1;  
+    }
+     window.scrollTo(0,0)
+    }
+    function tap(element)
+   { 
+    c = element.innerHTML
+    let d = document.getElementById('cart')
+    ch = document.createElement('div')
+    ch.innerHTML = '<div id ="m4" ><input type="text" class="adds" value='+c+'  readonly><input type="number" id="nu" value="1" min="1"><button id="de" onclick="delo(this)">Remove</button></div>'
+    d.appendChild(ch)
+    element.style.display = "none"
+         }
+         function delo(delement)
+          {
+    let dt = document.getElementById('cart')
+    delement.parentElement.remove()
+    }
+    function tick(ele){
+        cart = document.getElementById("cart")
+        d = ele.textContent
+        c = ele.children[0].value
+        let a = document.createElement('div')
+        a.innerHTML = ' <div class="cart_items"><input name="prod" type="hidden" value="'+c+'">'+d+'<img class="minus"onclick="de(this)"src="{% static 'minus.png' %}" alt="sub" width="70%"><input class="range" name="quan" type="number" value="1" min="1"><img class="minus" onclick="inc(this)" src="{% static 'add.png' %}" alt="add" width="60%"><img class="minus-1"onclick="delo(this)" src="{% static 'delete-button.png' %}" alt="delete" width="70%"></div>'
+        cart.append(a)
+        ele.onclick = "none"
+        ele.style.opacity = "0.5"
+    }
+    function de(elem){
+      c = elem.nextSibling.value
+      if(c>1){
+      elem.nextSibling.value = parseInt(c)-1
+       }
+       c = elem.nextSibling.value
+      console.log(c)
+    
+    }
+    function inc(elem){
+      c = elem.previousSibling.value
+      if(c>=1){
+      elem.previousSibling.value = parseInt(c)+1
+       }
+       c = elem.previousSibling.value
+      console.log(c)
+    
+    }
+    function delo(delement)
+    {
+        delement.parentElement.remove()   
+    }
+</script>

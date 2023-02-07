@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik&display=swap" rel="stylesheet">
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'check.css' %}">
+    <title>POS Dashboard</title>
+</head>
+<body style="margin: 0; display: flex;min-height: 100vh;flex-direction: column;justify-content: space-between;">
+       <h1 style="padding-left:5%; margin: 1%;">SADADA.in</h1>
+        <nav class="navbar">
+            <div class="navelements">Home</div>
+            <div class="navelements">Billing</div>
+            <div class="navelements">Check-Out</div>
+            <div class="navelements">Tables</div>
+        </nav>
+        <div style="display: flex;flex-direction: row;justify-content: space-around; font-size: larger; padding:2% "><div>Open Tables</div><div>Payment Methos</div><div>Revenue Chart</div></div>
+        <div class="home">
+            <div class="open_tables">
+             {% for cart in carts %}
+             <div class="table">{{cart}}<div class="ai" >Add Items</div> <div class="co">Check Out</div></div>
+             {% endfor %}
+            </div>
+            <div class="pie">
+                <div id="donutchart" style="width: 500px; height: 450px; margin:0"></div>
+            </div>
+            <div class="bar">
+                <div id="top_x_div" style="width: 30%; height: 450px;"></div>
+            </div>
+        </div>  
+        <p>For support and product information contact to contact@sadada.in</p>
+</body>
+</html>
+<script type="text/javascript">
+    google.charts.load("current", {packages:["corechart"]});
+    google.charts.setOnLoadCallback(drawChart);
+    function drawChart() {
+      c = {{pie|safe}}
+      var data = google.visualization.arrayToDataTable(c);
+      var options = {
+        title: '',
+        pieHole: 0.4,
+      };
+
+      var chart = new google.visualization.PieChart(document.getElementById('donutchart'));
+      chart.draw(data, options);
+    }
+    google.charts.load('current', {'packages':['bar']});
+      google.charts.setOnLoadCallback(drawStuff);
+
+      function drawStuff() {
+        bar_data = {{bar|safe}}
+        var data = new google.visualization.arrayToDataTable(bar_data);
+
+        var options = {
+          title: 'Previous Sales Data',
+          width: 288,
+          legend: { position: 'none' },
+          chart: { title: 'Based on last 5 days',
+                   subtitle: '' },
+          bars: 'vertical',
+          axes: {
+            x: {
+              0: { side: 'top', label: ''} 
+            }
+          },
+          bar: { groupWidth: "90%" }
+        };
+
+        var chart = new google.charts.Bar(document.getElementById('top_x_div'));
+        chart.draw(data, options);
+      };
+  </script>
